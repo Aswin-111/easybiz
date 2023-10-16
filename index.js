@@ -153,16 +153,27 @@ try{
               if (err) {
                 console.log(err)
                 
-                return res.json({ status: "failed" });  
+                return res.json({ status: "failed" }); 
               }
             
           })
         }
-        return res.json({ status: "success", data: fields }); 
-  });
 
-    }
+  });
+  
+  db.query(`SELECT * FROM ord_mast WHERE ord_no = "${ord_number}"`,function (err,result){
+    if(err) return res.json({status:'failed',message:'Failed to fetch order'})
+    db.query(`SELECT * FROM ord_trxfile WHERE ord_no = "${ord_number}"`,function (err,results){
+      if(err) return res.json({status:'failed',message:'Failed to fetch order'})
+
+    return res.json({ status: "success" ,ord_mast:result,ord_trxfile:results}); 
+  })
+    })
+  }
 })
+
+
+
 }
 catch (err) {
   console.log(err)
